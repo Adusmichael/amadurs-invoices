@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoreBliz Client Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #16a34a;
+            --warning-color: #ea580c;
+            --danger-color: #dc2626;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+            padding: 1.5rem;
+            border: none;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .table {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            background: white;
+        }
+
+        .table thead th {
+            background-color: #f1f5f9;
+            border: none;
+            font-weight: 600;
+            color: #374151;
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-color: #f1f5f9;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .status-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-paid {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-unpaid {
+            background-color: #fef2f2;
+            color: #991b1b;
+        }
+
+        /* Profit Margin Styling */
+        .profit-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .profit-high {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .profit-medium {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .profit-low {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .profit-negative {
+            background-color: #fef2f2;
+            color: #991b1b;
+        }
+
+        .expiring-row {
+            background-color: #fef3cd !important;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .expiring-row:hover {
+            background-color: #fef3cd !important;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem 0.5rem;
+            }
+
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-sm {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        .alert {
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 1rem;
+        }
+
+        .form-row {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h1 class="display-4 fw-bold text-primary">
+                <i class="fas fa-users me-3"></i>StoreBliz Client Manager
+            </h1>
+            <p class="lead text-muted">Manage your client projects, track deadlines, and grow your business with professional invoicing and analytics</p>
+            <div class="mt-3">
+                <button type="button" class="btn btn-success me-2" onclick="window.open('/analytics', '_blank')" title="View Analytics Dashboard">
+                    <i class="fas fa-chart-bar me-2"></i>Analytics Dashboard
+                </button>
+                <button type="button" class="btn btn-info me-2" onclick="window.open('/expenses', '_blank')" title="Track Business Expenses">
+                    <i class="fas fa-receipt me-2"></i>Expense Tracking
+                </button>
+            </div>
+        </div>
+
+        <!-- Alerts -->
+        <div id="alertContainer"></div>
+
+        <!-- Add/Edit Form -->
+        <div class="card">
+            <div class="card-header">
+                <h2 id="formTitle">
+                    <i class="fas fa-plus-circle me-2"></i>Add New Client Project
+                </h2>
+            </div>
+            <div class="card-body">
+                <form id="clientForm">
+                    <input type="hidden" id="editIndex" value="">
+                    
+                    <div class="row form-row">
+                        <div class="col-md-4">
+                            <label for="clientName" class="form-label">Client Name *</label>
+                            <input type="text" class="form-control" id="clientName" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="clientPhone" class="form-label">
+                                <i class="fab fa-whatsapp me-1 text-success"></i>WhatsApp Number
+                            </label>
+                            <input type="tel" class="form-control" id="clientPhone" 
+                                   placeholder="+447123456789" 
+                                   title="Enter phone number with country code for WhatsApp reminders">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="websiteUrl" class="form-label">Project URL *</label>
+                            <input type="url" class="form-control" id="websiteUrl" placeholder="https://example.com" required>
+                        </div>
+                    </div>
+
+                    <div class="row form-row">
+                        <div class="col-md-4">
+                            <label for="dateBuilt" class="form-label">Project Start Date *</label>
+                            <input type="date" class="form-control" id="dateBuilt" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="expiryDate" class="form-label">Project Deadline *</label>
+                            <input type="date" class="form-control" id="expiryDate" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="cost" class="form-label">Revenue (What client pays) *</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="costCurrencySymbol">£</span>
+                                <input type="number" class="form-control" id="cost" min="0" step="0.01" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row form-row">
+                        <div class="col-md-4">
+                            <label for="projectCost" class="form-label">Project Cost (Your expenses)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">£</span>
+                                <input type="number" class="form-control" id="projectCost" min="0" step="0.01" placeholder="0.00">
+                            </div>
+                            <div class="form-text">Include all project-related expenses</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="invoiceStatus" class="form-label">Invoice Status *</label>
+                            <select class="form-select" id="invoiceStatus" required>
+                                <option value="">Select Status</option>
+                                <option value="Paid">Paid</option>
+                                <option value="Unpaid">Unpaid</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="currency" class="form-label">Currency</label>
+                            <select class="form-select" id="currency">
+                                <option value="GBP">🇬🇧 GBP (£)</option>
+                                <option value="USD">🇺🇸 USD ($)</option>
+                                <option value="EUR">🇪🇺 EUR (€)</option>
+                                <option value="NGN">🇳🇬 NGN (₦)</option>
+                                <option value="ZAR">🇿🇦 ZAR (R)</option>
+                                <option value="KES">🇰🇪 KES (KSh)</option>
+                                <option value="GHS">🇬🇭 GHS (₵)</option>
+                                <option value="CAD">🇨🇦 CAD ($)</option>
+                                <option value="AUD">🇦🇺 AUD ($)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row form-row">
+                        <div class="col-md-6">
+                            <label for="taxPercent" class="form-label">Tax/VAT %</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="taxPercent" min="0" max="100" step="0.01" placeholder="20.00">
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="form-text text-muted">Leave blank for no tax</small>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mt-4 p-2 bg-info bg-opacity-10 rounded">
+                                <small class="text-muted">
+                                    <i class="fas fa-lightbulb me-1"></i>
+                                    <strong>Pro Features:</strong><br>
+                                    • Tax/VAT calculations<br>
+                                    • Professional invoicing<br>
+                                    • WhatsApp integration
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row form-row">
+                        <div class="col-12">
+                            <label for="customNotes" class="form-label">
+                                <i class="fas fa-sticky-note me-1"></i>Custom Notes 
+                                <small class="text-muted">(Optional - Additional information for the client)</small>
+                            </label>
+                            <textarea class="form-control" id="customNotes" rows="3" 
+                                      placeholder="Enter any additional notes, special instructions, or details for this client..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i><span id="submitBtnText">Add Client</span>
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn" style="display: none;">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Smart Renewal Reminders Section -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="fas fa-bell me-3"></i>Smart Renewal Reminders</h2>
+                    <p class="mb-0 text-light">Automated WhatsApp reminders for project renewals</p>
+                </div>
+                <button class="btn btn-light" onclick="refreshReminderStats()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            <div class="card-body">
+                <!-- Reminder Stats -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="bg-warning bg-opacity-10 p-3 rounded text-center">
+                            <h4 class="text-warning mb-1" id="pendingReminders">0</h4>
+                            <small class="text-muted">Pending Reminders</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bg-info bg-opacity-10 p-3 rounded text-center">
+                            <h4 class="text-info mb-1" id="totalReminders">0</h4>
+                            <small class="text-muted">Total Sent</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bg-success bg-opacity-10 p-3 rounded text-center">
+                            <h4 class="text-success mb-1" id="recentReminders">0</h4>
+                            <small class="text-muted">Last 30 Days</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bg-primary bg-opacity-10 p-3 rounded text-center">
+                            <button class="btn btn-primary btn-sm" onclick="checkEligibleClients()">
+                                <i class="fas fa-search"></i> Check Eligible
+                            </button>
+                            <small class="text-muted d-block mt-1">Find Clients</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Eligible Clients for Reminders -->
+                <div id="eligibleClientsSection" style="display: none;">
+                    <h5><i class="fas fa-users me-2"></i>Clients Needing Reminders</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Client</th>
+                                    <th>Days Left</th>
+                                    <th>Type</th>
+                                    <th>Value</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="eligibleClientsTable">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-success me-2" onclick="sendAllReminders()">
+                            <i class="fas fa-paper-plane"></i> Send All Reminders
+                        </button>
+                        <button class="btn btn-secondary" onclick="hideEligibleClients()">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Reminder History -->
+                <div class="mt-4">
+                    <h5><i class="fas fa-history me-2"></i>Recent Reminder Activity</h5>
+                    <div id="reminderHistory" class="bg-light p-3 rounded">
+                        <p class="text-muted mb-0">Loading reminder history...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clients Table -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">
+                    <i class="fas fa-table me-2"></i>Client Projects
+                    <span class="badge bg-light text-dark ms-2" id="clientCount">0</span>
+                </h2>
+                <div class="d-flex align-items-center">
+                    <label class="me-2 mb-0"><strong>Display:</strong></label>
+                    <select class="form-select" id="displayCurrency" style="width: 120px;">
+                        <option value="GBP">🇬🇧 GBP (£)</option>
+                        <option value="USD">🇺🇸 USD ($)</option>
+                        <option value="EUR">🇪🇺 EUR (€)</option>
+                        <option value="NGN">🇳🇬 NGN (₦)</option>
+                        <option value="ZAR">🇿🇦 ZAR (R)</option>
+                        <option value="KES">🇰🇪 KES (KSh)</option>
+                        <option value="GHS">🇬🇭 GHS (₵)</option>
+                        <option value="CAD">🇨🇦 CAD ($)</option>
+                        <option value="AUD">🇦🇺 AUD ($)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0" id="clientsTable">
+                        <thead>
+                            <tr>
+                                <th>Client Name</th>
+                                <th>Project URL</th>
+                                <th>Project Start</th>
+                                <th>Deadline</th>
+                                <th>Revenue</th>
+                                <th>Profit Margin</th>
+                                <th>Invoice Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsTableBody">
+                            <!-- Table content will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <i class="fas fa-inbox"></i>
+                    <h4>No clients added yet</h4>
+                    <p>Add your first client project using the form above.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global currency for display
+        let globalCurrency = 'GBP';
+        
+        class ClientManager {
+            constructor() {
+                this.clients = [];
+                this.editingClient = null;
+                this.initializeEventListeners();
+                this.loadClients();
+            }
+
+            initializeEventListeners() {
+                document.getElementById('clientForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleFormSubmit();
+                });
+
+                document.getElementById('cancelBtn').addEventListener('click', () => {
+                    this.cancelEdit();
+                });
+            }
+
+            async loadClients() {
+                try {
+                    const response = await fetch('/api/clients');
+                    if (response.ok) {
+                        this.clients = await response.json();
+                        this.renderTable();
+                        this.updateClientCount();
+                    } else {
+                        this.showAlert('Failed to load clients', 'danger');
+                    }
+                } catch (error) {
+                    this.showAlert('Error loading clients: ' + error.message, 'danger');
+                }
+            }
+
+            async handleFormSubmit() {
+                if (!this.validateForm()) {
+                    return;
+                }
+
+                const clientData = this.getFormData();
+                
+                try {
+                    if (this.editingClient) {
+                        // Update existing client
+                        const response = await fetch(`/api/clients/${this.editingClient.id}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(clientData)
+                        });
+
+                        if (response.ok) {
+                            this.showAlert('Client updated successfully!', 'success');
+                        } else {
+                            this.showAlert('Failed to update client', 'danger');
+                            return;
+                        }
+                    } else {
+                        // Create new client
+                        const response = await fetch('/api/clients', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(clientData)
+                        });
+
+                        if (response.ok) {
+                            this.showAlert('Client added successfully!', 'success');
+                        } else {
+                            this.showAlert('Failed to add client', 'danger');
+                            return;
+                        }
+                    }
+
+                    this.loadClients(); // Reload data from server
+                    this.resetForm();
+                } catch (error) {
+                    this.showAlert('Error: ' + error.message, 'danger');
+                }
+            }
+
+            validateForm() {
+                const form = document.getElementById('clientForm');
+                const requiredFields = form.querySelectorAll('[required]');
+                let isValid = true;
+
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+
+                // Validate expiry date is after built date
+                const dateBuilt = new Date(document.getElementById('dateBuilt').value);
+                const expiryDate = new Date(document.getElementById('expiryDate').value);
+
+                if (expiryDate <= dateBuilt) {
+                    this.showAlert('Project deadline must be after the start date!', 'danger');
+                    document.getElementById('expiryDate').classList.add('is-invalid');
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    this.showAlert('Please fill in all required fields correctly.', 'danger');
+                }
+
+                return isValid;
+            }
+
+            getFormData() {
+                return {
+                    clientName: document.getElementById('clientName').value.trim(),
+                    clientPhone: document.getElementById('clientPhone').value.trim(),
+                    websiteUrl: document.getElementById('websiteUrl').value.trim(),
+                    dateBuilt: document.getElementById('dateBuilt').value,
+                    expiryDate: document.getElementById('expiryDate').value,
+                    cost: parseFloat(document.getElementById('cost').value),
+                    projectCost: document.getElementById('projectCost').value ? parseFloat(document.getElementById('projectCost').value) : 0,
+                    invoiceStatus: document.getElementById('invoiceStatus').value,
+                    customNotes: document.getElementById('customNotes').value.trim(),
+                    taxPercent: document.getElementById('taxPercent').value ? parseFloat(document.getElementById('taxPercent').value) : 0,
+                    currency: document.getElementById('currency').value
+                };
+            }
+
+            resetForm() {
+                document.getElementById('clientForm').reset();
+                // Set default currency to GBP
+                document.getElementById('currency').value = 'GBP';
+                this.editingClient = null;
+                document.getElementById('formTitle').innerHTML = '<i class="fas fa-plus-circle me-2"></i>Add New Client Project';
+                document.getElementById('submitBtnText').textContent = 'Add Client';
+                document.getElementById('cancelBtn').style.display = 'none';
+                
+                // Remove validation classes
+                const fields = document.querySelectorAll('.form-control, .form-select');
+                fields.forEach(field => field.classList.remove('is-invalid'));
+            }
+
+            formatCurrency(amount, currency = 'GBP') {
+                const symbols = {
+                    'GBP': '£',
+                    'USD': '$',
+                    'EUR': '€',
+                    'NGN': '₦',
+                    'ZAR': 'R',
+                    'KES': 'KSh',
+                    'GHS': '₵',
+                    'CAD': '$',
+                    'AUD': '$'
+                };
+                const symbol = symbols[currency] || currency;
+                return `${symbol}${parseFloat(amount).toFixed(2)}`;
+            }
+
+            updateCurrencyDisplay() {
+                // Re-render the table with the new currency
+                this.renderTable();
+            }
+
+            getCurrentCurrency() {
+                return globalCurrency;
+            }
+            
+            getProfitClass(profitMargin) {
+                if (profitMargin >= 50) return 'profit-high';
+                if (profitMargin >= 20) return 'profit-medium';
+                if (profitMargin >= 0) return 'profit-low';
+                return 'profit-negative';
+            }
+
+            editClient(index) {
+                const client = this.clients[index];
+                this.editingClient = client;
+
+                // Populate form
+                document.getElementById('clientName').value = client.clientName;
+                document.getElementById('clientPhone').value = client.clientPhone || '';
+                document.getElementById('websiteUrl').value = client.websiteUrl;
+                document.getElementById('dateBuilt').value = client.dateBuilt;
+                document.getElementById('expiryDate').value = client.expiryDate;
+                document.getElementById('cost').value = client.cost;
+                document.getElementById('projectCost').value = client.projectCost || 0;
+                document.getElementById('invoiceStatus').value = client.invoiceStatus;
+                document.getElementById('customNotes').value = client.customNotes || '';
+                document.getElementById('taxPercent').value = client.taxPercent || '';
+                document.getElementById('currency').value = client.currency || 'GBP';
+
+                // Update UI
+                document.getElementById('formTitle').innerHTML = '<i class="fas fa-edit me-2"></i>Edit Client Project';
+                document.getElementById('submitBtnText').textContent = 'Update Client';
+                document.getElementById('cancelBtn').style.display = 'inline-block';
+
+                // Scroll to form
+                document.getElementById('clientForm').scrollIntoView({ behavior: 'smooth' });
+            }
+
+            cancelEdit() {
+                this.resetForm();
+            }
+
+            viewInvoice(index) {
+                const client = this.clients[index];
+                window.open(`/invoice/${client.id}`, '_blank');
+            }
+
+            viewReceipt(index) {
+                const client = this.clients[index];
+                window.open(`/receipt/${client.id}`, '_blank');
+            }
+
+// Payment link functionality removed
+
+            async sendWhatsApp(index) {
+                const client = this.clients[index];
+                
+                if (!client.clientPhone) {
+                    this.showAlert(`${client.clientName} doesn't have a WhatsApp number saved. Please edit the client to add their phone number first.`, 'warning');
+                    return;
+                }
+                
+                // Format phone number for WhatsApp
+                let phone = client.clientPhone;
+                if (phone && !phone.startsWith('+')) {
+                    phone = '+44' + phone.replace(/^0/, ''); // Convert UK format
+                }
+                
+                // Create professional WhatsApp message
+                const invoiceUrl = `https://storebliz.com/invoice/${client.id}`;
+                const message = `Hello ${client.clientName}!
+
+Your project invoice is ready for review.
+
+View Invoice: ${invoiceUrl}
+
+Thank you for choosing our services. If you have any questions, please don't hesitate to reach out.
+
+Best regards,
+Adus Michael - IT Consultant
+Email: adusmichael@gmail.com  
+Phone: +447415144247`;
+                
+                // Generate WhatsApp URL
+                const cleanPhone = phone.replace(/[^0-9]/g, '');
+                const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+                
+                // Open WhatsApp Web
+                window.open(whatsappUrl, '_blank');
+                
+                this.showAlert(`WhatsApp opened for ${client.clientName}! The message is pre-filled and ready to send.`, 'success');
+            }
+
+
+
+            async sendMessage(clientId, type, typeName) {
+                const loadingAlert = this.showAlert(`Sending ${typeName} message...`, 'info');
+                
+                try {
+                    const response = await fetch(`/api/send-invoice-${type}/${clientId}`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({})
+                    });
+                    
+                    const result = await response.json();
+                    
+                    // Remove loading alert
+                    if (loadingAlert && loadingAlert.parentNode) {
+                        loadingAlert.parentNode.removeChild(loadingAlert);
+                    }
+                    
+                    if (response.ok && result.success) {
+                        this.showAlert(`✅ ${result.message}`, 'success');
+                        // Refresh client list to update sent_at status
+                        this.loadClients();
+                    } else {
+                        this.showAlert(`❌ ${result.error || `Failed to send ${typeName}`}`, 'danger');
+                    }
+                } catch (error) {
+                    // Remove loading alert
+                    if (loadingAlert && loadingAlert.parentNode) {
+                        loadingAlert.parentNode.removeChild(loadingAlert);
+                    }
+                    this.showAlert(`❌ Error sending ${typeName}: ${error.message}`, 'danger');
+                }
+            }
+
+            async deleteClient(index) {
+                if (confirm('Are you sure you want to delete this client?')) {
+                    const client = this.clients[index];
+                    try {
+                        const response = await fetch(`/api/clients/${client.id}`, {
+                            method: 'DELETE'
+                        });
+
+                        if (response.ok) {
+                            this.showAlert('Client deleted successfully!', 'success');
+                            this.loadClients(); // Reload data from server
+                        } else {
+                            this.showAlert('Failed to delete client', 'danger');
+                        }
+                    } catch (error) {
+                        this.showAlert('Error deleting client: ' + error.message, 'danger');
+                    }
+                }
+            }
+
+            isExpiringSoon(expiryDate) {
+                const today = new Date();
+                const expiry = new Date(expiryDate);
+                const timeDiff = expiry.getTime() - today.getTime();
+                const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                return daysDiff <= 30 && daysDiff >= 0;
+            }
+
+            renderTable() {
+                const tbody = document.getElementById('clientsTableBody');
+                const emptyState = document.getElementById('emptyState');
+                
+                if (this.clients.length === 0) {
+                    tbody.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                
+                tbody.innerHTML = this.clients.map((client, index) => {
+                    const isExpiring = this.isExpiringSoon(client.expiryDate);
+                    const expiryClass = isExpiring ? 'expiring-row' : '';
+                    const statusClass = client.invoiceStatus === 'Paid' ? 'status-paid' : 'status-unpaid';
+                    
+                    return `
+                        <tr class="${expiryClass}">
+                            <td>
+                                <strong>${this.escapeHtml(client.clientName)}</strong>
+                                ${isExpiring ? '<br><small class="text-warning"><i class="fas fa-exclamation-triangle me-1"></i>Expiring Soon!</small>' : ''}
+                            </td>
+                            <td>
+                                <a href="${this.escapeHtml(client.websiteUrl)}" target="_blank" class="text-decoration-none">
+                                    ${this.escapeHtml(client.websiteUrl)}
+                                    <i class="fas fa-external-link-alt ms-1 text-muted"></i>
+                                </a>
+                            </td>
+                            <td>${this.formatDate(client.dateBuilt)}</td>
+                            <td>${this.formatDate(client.expiryDate)}</td>
+                            <td>${this.formatCurrency(client.cost, this.getCurrentCurrency())}</td>
+                            <td>
+                                <span class="profit-badge ${this.getProfitClass(client.profitMargin)}">
+                                    <i class="fas ${client.profitMargin > 50 ? 'fa-arrow-up' : client.profitMargin > 20 ? 'fa-minus' : 'fa-arrow-down'} me-1"></i>
+                                    ${client.profitMargin}%
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-badge ${statusClass}">
+                                    <i class="fas ${client.invoiceStatus === 'Paid' ? 'fa-check-circle' : 'fa-clock'} me-1"></i>
+                                    ${client.invoiceStatus}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-info btn-sm" onclick="clientManager.viewInvoice(${index})" title="View Invoice">
+                                        <i class="fas fa-file-invoice"></i>
+                                    </button>
+                                    ${client.invoiceStatus === 'Paid' ? 
+                                        `<button class="btn btn-success btn-sm" onclick="clientManager.viewReceipt(${index})" title="View Receipt">
+                                            <i class="fas fa-receipt"></i>
+                                        </button>` : 
+''
+                                    }
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-outline-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" title="Send Invoice">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" onclick="clientManager.sendWhatsApp(${index})">
+                                                <i class="fab fa-whatsapp text-success me-2"></i>WhatsApp
+                                            </a></li>
+                                        </ul>
+                                    </div>
+                                    <button class="btn btn-warning btn-sm" onclick="clientManager.editClient(${index})" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="clientManager.deleteClient(${index})" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
+
+            escapeHtml(text) {
+                const map = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                };
+                return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+            }
+
+            updateClientCount() {
+                document.getElementById('clientCount').textContent = this.clients.length;
+            }
+
+            showAlert(message, type) {
+                const alertContainer = document.getElementById('alertContainer');
+                const alertId = 'alert-' + Date.now();
+                
+                const alertHtml = `
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert" id="${alertId}">
+                        <i class="fas ${this.getAlertIcon(type)} me-2"></i>
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                
+                alertContainer.insertAdjacentHTML('beforeend', alertHtml);
+                
+                // Auto-remove alert after 5 seconds
+                setTimeout(() => {
+                    const alert = document.getElementById(alertId);
+                    if (alert) {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    }
+                }, 5000);
+            }
+
+            getAlertIcon(type) {
+                const icons = {
+                    'success': 'fa-check-circle',
+                    'danger': 'fa-exclamation-circle',
+                    'warning': 'fa-exclamation-triangle',
+                    'info': 'fa-info-circle'
+                };
+                return icons[type] || 'fa-info-circle';
+            }
+        }
+
+        // Initialize the application
+        const clientManager = new ClientManager();
+
+        // Add currency change event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add currency selector event listener for the form
+            const currencySelector = document.getElementById('currency');
+            if (currencySelector) {
+                currencySelector.addEventListener('change', (e) => {
+                    const selectedCurrency = e.target.value;
+                    globalCurrency = selectedCurrency;
+                    
+                    // Update the cost input currency symbol
+                    const costSymbol = document.getElementById('costCurrencySymbol');
+                    if (costSymbol) {
+                        const symbols = {
+                            'GBP': '£',
+                            'USD': '$',
+                            'EUR': '€',
+                            'NGN': '₦',
+                            'ZAR': 'R',
+                            'KES': 'KSh',
+                            'GHS': '₵',
+                            'CAD': '$',
+                            'AUD': '$'
+                        };
+                        costSymbol.textContent = symbols[selectedCurrency] || selectedCurrency;
+                    }
+                    
+                    clientManager.renderTable(); // Re-render with new currency
+                });
+            }
+            
+            // Add separate display currency selector (we'll add this to HTML)
+            const displayCurrencySelector = document.getElementById('displayCurrency');
+            if (displayCurrencySelector) {
+                displayCurrencySelector.addEventListener('change', (e) => {
+                    globalCurrency = e.target.value;
+                    clientManager.renderTable(); // Re-render with new currency
+                });
+            }
+        });
+
+        // Check for expiring websites on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const expiringClients = clientManager.clients.filter(client => 
+                clientManager.isExpiringSoon(client.expiryDate)
+            );
+            
+            if (expiringClients.length > 0) {
+                const message = `${expiringClients.length} project(s) expiring within 30 days!`;
+                clientManager.showAlert(message, 'warning');
+            }
+            
+            // Load reminder stats on page load
+            refreshReminderStats();
+            loadReminderHistory();
+        });
+
+        // Smart Renewal Reminder Functions
+        async function refreshReminderStats() {
+            try {
+                const response = await fetch('/api/reminders/stats');
+                if (response.ok) {
+                    const stats = await response.json();
+                    document.getElementById('pendingReminders').textContent = stats.pending_reminders;
+                    document.getElementById('totalReminders').textContent = stats.total_reminders_sent;
+                    document.getElementById('recentReminders').textContent = stats.recent_reminders_30_days;
+                }
+            } catch (error) {
+                console.error('Error loading reminder stats:', error);
+            }
+        }
+
+        async function checkEligibleClients() {
+            try {
+                const response = await fetch('/api/reminders/check');
+                if (response.ok) {
+                    const data = await response.json();
+                    displayEligibleClients(data.eligible_clients);
+                } else {
+                    clientManager.showAlert('Failed to check eligible clients', 'danger');
+                }
+            } catch (error) {
+                clientManager.showAlert('Error checking eligible clients: ' + error.message, 'danger');
+            }
+        }
+
+        function displayEligibleClients(eligibleClients) {
+            const section = document.getElementById('eligibleClientsSection');
+            const tableBody = document.getElementById('eligibleClientsTable');
+            
+            if (eligibleClients.length === 0) {
+                clientManager.showAlert('No clients need reminders at this time!', 'success');
+                return;
+            }
+            
+            tableBody.innerHTML = '';
+            
+            eligibleClients.forEach(client => {
+                const row = document.createElement('tr');
+                
+                const typeColor = {
+                    '7_day': 'danger',
+                    '30_day': 'warning', 
+                    '60_day': 'info'
+                };
+                
+                const typeLabel = {
+                    '7_day': 'URGENT (7 days)',
+                    '30_day': 'Important (30 days)',
+                    '60_day': 'Early (60 days)'
+                };
+                
+                row.innerHTML = `
+                    <td><strong>${client.client_name}</strong></td>
+                    <td><span class="badge bg-${typeColor[client.reminder_type]}">${client.days_remaining} days</span></td>
+                    <td><span class="badge bg-${typeColor[client.reminder_type]}">${typeLabel[client.reminder_type]}</span></td>
+                    <td>£${client.project_value.toFixed(2)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-success" onclick="sendSingleReminder(${client.client_id})">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            section.style.display = 'block';
+        }
+
+        async function sendSingleReminder(clientId) {
+            try {
+                const response = await fetch('/api/reminders/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ client_ids: [clientId] })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.sent_reminders.length > 0) {
+                        const reminder = data.sent_reminders[0];
+                        // Open WhatsApp with the message
+                        window.open(reminder.whatsapp_url, '_blank');
+                        clientManager.showAlert(`Reminder prepared for ${reminder.client_name}!`, 'success');
+                        
+                        // Refresh stats and eligible clients
+                        setTimeout(() => {
+                            refreshReminderStats();
+                            checkEligibleClients();
+                            loadReminderHistory();
+                        }, 1000);
+                    }
+                } else {
+                    clientManager.showAlert('Failed to send reminder', 'danger');
+                }
+            } catch (error) {
+                clientManager.showAlert('Error sending reminder: ' + error.message, 'danger');
+            }
+        }
+
+        async function sendAllReminders() {
+            try {
+                const response = await fetch('/api/reminders/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.sent_reminders.length > 0) {
+                        // Open each WhatsApp message in a new tab
+                        data.sent_reminders.forEach((reminder, index) => {
+                            setTimeout(() => {
+                                window.open(reminder.whatsapp_url, '_blank');
+                            }, index * 500); // Small delay between tabs
+                        });
+                        
+                        clientManager.showAlert(`${data.total_sent} reminder(s) prepared! Check your new tabs.`, 'success');
+                        
+                        // Refresh stats and hide eligible clients section
+                        setTimeout(() => {
+                            refreshReminderStats();
+                            hideEligibleClients();
+                            loadReminderHistory();
+                        }, 1000);
+                    } else {
+                        clientManager.showAlert('No reminders to send!', 'info');
+                    }
+                } else {
+                    clientManager.showAlert('Failed to send reminders', 'danger');
+                }
+            } catch (error) {
+                clientManager.showAlert('Error sending reminders: ' + error.message, 'danger');
+            }
+        }
+
+        function hideEligibleClients() {
+            document.getElementById('eligibleClientsSection').style.display = 'none';
+        }
+
+        async function loadReminderHistory() {
+            try {
+                const response = await fetch('/api/reminders/history');
+                if (response.ok) {
+                    const reminders = await response.json();
+                    const historyDiv = document.getElementById('reminderHistory');
+                    
+                    if (reminders.length === 0) {
+                        historyDiv.innerHTML = '<p class="text-muted mb-0">No reminders sent yet.</p>';
+                        return;
+                    }
+                    
+                    const recentReminders = reminders.slice(0, 5); // Show last 5
+                    historyDiv.innerHTML = recentReminders.map(reminder => `
+                        <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                            <div>
+                                <strong>${reminder.client_name}</strong>
+                                <span class="badge bg-secondary ms-2">${reminder.reminder_type.replace('_', ' ')}</span>
+                            </div>
+                            <small class="text-muted">${new Date(reminder.sent_date).toLocaleDateString()}</small>
+                        </div>
+                    `).join('') + (reminders.length > 5 ? '<p class="text-muted mt-2 mb-0">... and more</p>' : '');
+                } else {
+                    document.getElementById('reminderHistory').innerHTML = '<p class="text-muted mb-0">Failed to load reminder history.</p>';
+                }
+            } catch (error) {
+                document.getElementById('reminderHistory').innerHTML = '<p class="text-muted mb-0">Error loading reminder history.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
